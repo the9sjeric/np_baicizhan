@@ -1,0 +1,53 @@
+通勤人数预测
+佳佳是一位编程爱好者，最近她自学了时间序列预测相关知识，其中预测方法就有简单均值预测法、移动均值预测法和自回归移动均值预测法。
+
+她从网上得到了一份高铁服务通勤人数数据集，数据中包括ID、Datetime和Count。
+该数据集是一份2012-08-25至2014-09-25期间的数据，字段有ID、日期Datetime和通勤人数Count，将数据分为训练集和测试集，通过训练集来预测未来通勤人数，测试集即为预测数据对应真实数据，对比分析三种预测法。
+
+分析步骤：
+0.导入模块，pandas、matplotlib.pyplot、statsmodels.api；
+1.读取数据集df，路径为/Users/forecast/jetrail.csv；
+2.对df的Datetime列作时间格式转换，并将Datetime列设为行索引；
+3.将数据集分为训练集train（df中的0-17552行）和测试集test（df中的17553-最后）；
+4.分别对df、train、test按天聚合数据，并求取均值；
+5.将测试集数据复制给预测数据y_hat_avg；
+6.普通均值法，通过训练集预测通勤人数，将数据存储在y_hat_avg的avg_forecast列中；
+7.移动均值法（10日移动均值），通过训练集预测通勤人数，将数据存储在y_hat_avg的moving_avg_forecast列中；
+8.自回归移动均值预测法，通过训练集预测通勤人数，将数据存储在y_hat_avg的SARIMA列中；
+9.数据可视化。画出训练集、测试集、普通均值预测数据和移动均值预测数据折线图（X轴数据为日期，Y轴数据为Count或预测值），并显示图例。
+
+可视化要求：
+训练集（train）：颜色为blue，label为train；
+测试集（test）：颜色为gray，label为test；
+普通均值预测数据（y_hat_avg中的avg_forecast列）：颜色为red，label为Average Forecast；
+移动均值预测数据（y_hat_avg中的moving_avg_forecast列）：颜色为green，label为Moving Average Forecast；
+自回归移动均值预测数据（y_hat_avg中的SARIMA列）：颜色为black，label为SARIMA；
+
+本题只是了解移动均值还可用于时间序列预测，预测的准确度不过多追究，一定还有其他更优的预测方法，感兴趣的可以自行下去学习。
+
+在提示中，我们已经为大家写好了自回归移动均值法预测代码。这里，用到了新的知识点：时间序列预测——季节性预测模型SARIMAX。
+
+
+statsmodels模块安装：
+1.pip install wheel；
+2.pip install statsmodels
+
+这是一个Python模块，用于拟合多种统计模型，执行统计测试以及数据探索和可视化。这里将其用来进行时间序列预测。
+
+自回归移动均值预测部分代码：
+fit1 = sm.tsa.statespace.SARIMAX(train["Count"], order=(2, 1, 4), seasonal_order=(0, 1, 1, 12)).fit()
+y_hat_avg["SARIMA"] = fit1.predict(start="2014-08-26", end="2014-09-25", dynamic=True)
+
+SARIMA模型（自回归移动均值）参数说明：
+order=(p,d,q)表示阶数
+"p"：趋势自回归阶数；
+"d"：趋势差分阶数；
+"q"：趋势移动平均阶数；
+
+seasonal_order=(P,D,Q,m)
+"P"：季节性自回归阶数；
+"D"：季节性差分阶数；
+"Q"：季节性移动平均阶数；
+"m"：单个季节期间的时间步数；
+
+这些参数的设置是个探索性的过程，相关探索的链接会在之后的答案公布文档中给出，感兴趣的同学可以自己下去学习和探索！

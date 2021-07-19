@@ -9,7 +9,7 @@ df = df.set_index("Date")
 
 USA_M_MeanPrice = df.resample("M").mean()
 Region_M_MeanPrice = df.groupby("region").resample("M").mean()
-
+print(Region_M_MeanPrice)
 NewYork_M = Region_M_MeanPrice.loc["NewYork"]
 Chicago_M = Region_M_MeanPrice.loc["Chicago"]
 
